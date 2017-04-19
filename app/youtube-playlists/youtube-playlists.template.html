@@ -1,0 +1,50 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-6">
+			<label for="playlist-selector">Select a playlist</label>
+			<select id="playlist-selector" class="list-of-playlists"
+					ng-model="$ctrl.selectQuery"
+					ng-options="index.snippet.title for index in $ctrl.aOfPlaylistsObjects"
+					ng-change="$ctrl.getPlaylistVideos($ctrl.selectQuery.id)">
+			</select>
+		</div>
+		<div class="col-sm-6">
+			<label for="search-playlist">Search in playlist</label>
+			<input id="search-playlist" class="search-playlist" ng-model="$ctrl.query" placeholder="Search in playlist" />
+		</div>
+		<div class="col-sm-12">
+			<p>
+				Sorteren op:
+				<select ng-model="$ctrl.orderProp">
+					<option value="snippet.publishedAt">Oud - Nieuw</option>
+					<option value="-snippet.publishedAt">Nieuw - Oud</option>
+				</select>
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="vid in $ctrl.aOfItemObjects | filter:$ctrl.query | orderBy:$ctrl.orderProp">
+			<div class="video-item">
+				<figure class="thumb-wrap">
+					<img class="thumb" ng-src="{{ vid.snippet.thumbnails.medium.url }}" alt="" ng-click="$ctrl.toggleShowVideo(vid.snippet.resourceId.videoId)">
+					<i class="fa fa-play" aria-hidden="true" ng-click="$ctrl.toggleShowVideo(vid.snippet.resourceId.videoId)"></i>
+				</figure>
+				<strong class="date">
+					<i class="fa fa-clock-o" aria-hidden="true"></i>
+					Gepubliceerd op: {{ vid.snippet.publishedAt | date : 'd MMM , y' : timezone }}
+				</strong>
+				<p class="title">{{ vid.snippet.title }}</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<!--
+	Lightbox for toggling youtube video
+-->
+<div class="video-lightbox" ng-show="$ctrl.showLightbox">
+	<i class="fa fa-times" aria-hidden="true" ng-click="$ctrl.toggleShowVideo()"></i>
+	<iframe ng-src="{{ $ctrl.videoUrl }}" allowfullscreen></iframe>
+</div>
